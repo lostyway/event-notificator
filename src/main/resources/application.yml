@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+  spring:
+    application:
+      name: eventmanager
+    liquibase:
+      enabled: true
+      change-log: db/changelog/master.xml
+    datasource:
+      url: ${SPRING_DATASOURCE_URL}
+      username: ${SPRING_DATASOURCE_USERNAME}
+      password: ${SPRING_DATASOURCE_PASSWORD}
+      hikari:
+        max-lifetime: 1_800_000
+        maximum-pool-size: 20
+    jpa:
+      hibernate:
+        ddl-auto: none
+      show-sql: false
+      open-in-view: false
+      properties:
+        hibernate:
+          jdbc:
+            batch_size: 50
+            batch_versioned_data: true
+          order_inserts: true
+          order_updates: true
+
+
+  logging:
+    level:
+      root: info
+      com.lostway.eventnotificator.aop: info
+  springdoc:
+    swagger-ui:
+      url: /event-notificator-openapi.yaml
+  secret.key: verylongsecretkeyforpetprojecteventmanagerlostway2025
+
+  #In second
+  expiration.time: 3600
