@@ -38,13 +38,13 @@ spring:
         order_updates: true
 
 
-  logging:
-    level:
-      root: info
-      com.lostway.eventnotificator.aop: info
-  springdoc:
-    swagger-ui:
-      url: /event-notificator-openapi.yaml
+logging:
+  level:
+    root: info
+    com.lostway.eventnotificator.aop: info
+springdoc:
+  swagger-ui:
+    url: /event-notificator-openapi.yaml
   secret.key: verylongsecretkeyforpetprojecteventmanagerlostway2025
 
   #In second
