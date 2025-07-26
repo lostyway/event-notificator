@@ -4,6 +4,25 @@ server:
   spring:
     application:
       name: eventmanager
+
+    kafka:
+      bootstrap-servers: kafka:9092
+
+      consumer:
+        group-id: notification-group
+        auto-offset-reset: earliest
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+        properties:
+          spring.json.trusted.packages: "*"
+
+      listener:
+        missing-topics-fatal: false
+
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
     liquibase:
       enabled: true
       change-log: db/changelog/master.xml
