@@ -14,6 +14,5 @@ public class EventKafkaListener {
     )
     public void listen(EventChangeKafkaMessage message) {
         log.info("Kafka прислал сообщение ;) : {}", message);
-        System.out.println(("Kafka прислал сообщение ;) : %s".formatted(message)));
     }
 }

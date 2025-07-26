@@ -1,0 +1,7 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+  datasource:
+    url: jdbc:postgresql://event-notificator-db:5432/eventnotificator
+    username: postgres
+    password: password

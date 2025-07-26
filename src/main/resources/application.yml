@@ -1,50 +1,41 @@
 server:
   port: 8082
 
-  spring:
-    application:
-      name: eventmanager
+spring:
+  application:
+    name: eventmanager
 
-    kafka:
-      bootstrap-servers: kafka:9092
-
-      consumer:
-        group-id: notification-group
-        auto-offset-reset: earliest
-        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-        properties:
-          spring.json.trusted.packages: "*"
-
-      listener:
-        missing-topics-fatal: false
-
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
-    liquibase:
-      enabled: true
-      change-log: db/changelog/master.xml
-    datasource:
-      url: ${SPRING_DATASOURCE_URL}
-      username: ${SPRING_DATASOURCE_USERNAME}
-      password: ${SPRING_DATASOURCE_PASSWORD}
-      hikari:
-        max-lifetime: 1_800_000
-        maximum-pool-size: 20
-    jpa:
-      hibernate:
-        ddl-auto: none
-      show-sql: false
-      open-in-view: false
+  kafka:
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        hibernate:
-          jdbc:
-            batch_size: 50
-            batch_versioned_data: true
-          order_inserts: true
-          order_updates: true
+        spring.json.trusted.packages: "*"
+
+    listener:
+      missing-topics-fatal: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  liquibase:
+    enabled: true
+    change-log: db/changelog/master.xml
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
 
 
   logging:
@@ -58,3 +49,7 @@ server:
 
   #In second
   expiration.time: 3600
+  datasource:
+    hikari:
+      max-lifetime: 1_800_000
+      maximum-pool-size: 20
