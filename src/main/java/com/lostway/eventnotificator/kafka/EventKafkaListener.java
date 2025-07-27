@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class EventKafkaListener {
 
     @KafkaListener(
-            topics = "event_changes",
+            topics = "event-changes",
             containerFactory = "eventKafkaListenerContainerFactory"
     )
     public void listen(EventChangeKafkaMessage message) {

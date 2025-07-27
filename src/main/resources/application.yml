@@ -2,8 +2,14 @@ server:
   port: 8082
 
 spring:
+  datasource:
+    hikari:
+      max-lifetime: 300000
+      maximum-pool-size: 20
   application:
     name: eventmanager
+  profiles:
+    active: docker
 
   kafka:
     consumer:
@@ -49,7 +55,3 @@ springdoc:
 
   #In second
   expiration.time: 3600
-  datasource:
-    hikari:
-      max-lifetime: 1_800_000
-      maximum-pool-size: 20

@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: kafka:9092, kafka-2:9093, kafka-3:9094
   datasource:
     url: jdbc:postgresql://event-notificator-db:5432/eventnotificator
     username: postgres
