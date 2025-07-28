@@ -21,9 +21,19 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, EventChangeKafkaMessage> eventKafkaConsumerFactory() {
+        return createConsumerFactory(EventChangeKafkaMessage.class);
+    }
+
+    @Bean
+    public ConsumerFactory<String, EventStatusChangeKafkaMessage> eventStatusKafkaConsumerFactory() {
+        return createConsumerFactory(EventStatusChangeKafkaMessage.class);
+    }
+
+    public <T> ConsumerFactory<String, T> createConsumerFactory(Class<T> clazz) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "event-notificator-group");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
@@ -32,7 +42,7 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(
                 props,
                 new StringDeserializer(),
-                new JsonDeserializer<>(EventChangeKafkaMessage.class)
+                new JsonDeserializer<>(clazz)
         );
     }
 
@@ -40,6 +50,15 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, EventChangeKafkaMessage> eventKafkaListenerContainerFactory() {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, EventChangeKafkaMessage>();
         factory.setConsumerFactory(eventKafkaConsumerFactory());
+        factory.setMissingTopicsFatal(false);
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, EventStatusChangeKafkaMessage> eventStatusKafkaListenerContainerFactory() {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, EventStatusChangeKafkaMessage>();
+        factory.setConsumerFactory(eventStatusKafkaConsumerFactory());
+        factory.setMissingTopicsFatal(false);
         return factory;
     }
 }
