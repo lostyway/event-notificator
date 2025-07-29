@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+      http://www.liquibase.org/xml/ns/dbchangelog
+      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+
+    <changeSet id="1" author="lostway">
+        <comment>Создание таблицы notifications</comment>
+        <sql>
+            create table notifications
+            (
+                id         bigserial primary key,
+                user_id    bigint,
+                event_id   bigint    not null,
+                message    text      not null,
+                is_read    boolean   not null,
+                created_at timestamp not null
+            );
+        </sql>
+        <rollback>drop table if exists notifications cascade</rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -6,14 +6,17 @@ spring:
     hikari:
       max-lifetime: 300000
       maximum-pool-size: 20
+
   application:
     name: eventmanager
+
   profiles:
     active: docker
 
   liquibase:
     enabled: true
-    change-log: db/changelog/master.xml
+    change-log: db.changelog/master.xml
+
   jpa:
     hibernate:
       ddl-auto: none
