@@ -27,12 +27,13 @@
         <sql>
             create table notifications
             (
-                id         bigserial primary key,
-                user_id    bigint,
-                event_id   bigint    not null,
-                is_read    boolean   not null,
-                changelog  bigint references changelogs (id),
-                created_at timestamp not null
+                id                 bigserial primary key,
+                user_id            bigint,
+                event_id           bigint    not null,
+                is_read            boolean   not null,
+                changelog          bigint references changelogs (id),
+                created_at         timestamp not null,
+                user_to_notificate bigint    not null
             );
         </sql>
         <rollback>drop table if exists notifications cascade</rollback>

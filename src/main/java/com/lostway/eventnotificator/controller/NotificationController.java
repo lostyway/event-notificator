@@ -3,7 +3,6 @@ package com.lostway.eventnotificator.controller;
 import com.lostway.eventnotificator.controller.dto.EventChangeNotification;
 import com.lostway.eventnotificator.controller.dto.MarkReadRequest;
 import com.lostway.eventnotificator.security.CustomUserPrincipal;
-import com.lostway.eventnotificator.security.JWTUtil;
 import com.lostway.eventnotificator.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +15,21 @@ import java.util.List;
 @RequestMapping("/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
-    private final JWTUtil jwtUtil;
     private final NotificationService notificationService;
 
     @GetMapping
     public ResponseEntity<List<EventChangeNotification>> getNotifications() {
-        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = customUserPrincipal.getId();
-        List<EventChangeNotification> eventChangeNotificationList = notificationService.findNotificationsById(userId);
-        return ResponseEntity.ok(eventChangeNotificationList);
+        return ResponseEntity.ok(notificationService.findNotReadNotifications(getCurrentUserId()));
     }
 
     @PostMapping
-    public ResponseEntity<Void> markNotificationsAsRead(@RequestBody MarkReadRequest request) {
-        //TODO Пометить нотификации как прочитанные по request.getNotificationIds().
-        // Также должна быть валидация что пользователь получал эту нотификацию.
-        // ID нотификации должна быть по eventID либо по ID нотификации из БД.
+    public ResponseEntity<Void> markNotificationsAsRead(@RequestBody MarkReadRequest eventIdOfNotifications) {
+        notificationService.markNotificationsAsRead(eventIdOfNotifications.notificationIds(), getCurrentUserId());
         return ResponseEntity.noContent().build();
+    }
+
+    private static Long getCurrentUserId() {
+        CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return customUserPrincipal.getId();
     }
 }

@@ -25,7 +25,7 @@ public class NotificationService {
     private final ChangeLogMapper changeLogMapper;
 
     /**
-     * Добавление нотификации и ченджелога в БД.
+     * Добавление нотификации и ченджлога в БД.
      *
      * @param message сообщение, полученное от EventManager сервиса
      */
@@ -51,6 +51,7 @@ public class NotificationService {
                     .eventId(message.getEventId())
                     .createdAt(ClockUtil.getMoscowTimeNow())
                     .changelog(changeLogEntity)
+                    .userToNotificate(userId)
                     .build();
 
             notificationRepository.save(notification);
@@ -58,9 +59,16 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Поиск непрочитанных уведомлений (changelog) для пользователя
+     *
+     * @param userId ID пользователя из базы данных
+     * @return Список changelog уведомлений
+     */
+
     @Transactional(readOnly = true)
-    public List<EventChangeNotification> findNotificationsById(Long userId) {
-        List<NotificationEntity> notificationList = notificationRepository.findByUserId(userId);
+    public List<EventChangeNotification> findNotReadNotifications(Long userId) {
+        List<NotificationEntity> notificationList = notificationRepository.findByUserIdAndIsReadIsFalse(userId);
 
         List<ChangeLogEntity> changelogs = notificationList
                 .stream()
@@ -68,5 +76,9 @@ public class NotificationService {
                 .toList();
 
         return changeLogMapper.toEventChangeNotifications(changelogs);
+    }
+
+    public void markNotificationsAsRead(List<Long> notificationEventIds, Long userId) {
+        notificationRepository.markIsReadByEventIdAndUserId(notificationEventIds, userId);
     }
 }

@@ -35,4 +35,7 @@ public class NotificationEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "changelog", nullable = false)
     private ChangeLogEntity changelog;
+
+    @Column(name = "user_to_notificate", nullable = false)
+    private Long userToNotificate;
 }
