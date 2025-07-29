@@ -6,6 +6,23 @@
       https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
 
     <changeSet id="1" author="lostway">
+        <comment>Создание таблицы changelogs</comment>
+        <sql>
+            create table changelogs
+            (
+                id          bigserial primary key,
+                event_id    bigint not null,
+                name        jsonb,
+                max_places  jsonb,
+                date        jsonb,
+                cost        jsonb,
+                duration    jsonb,
+                location_id jsonb
+            );
+        </sql>
+        <rollback>drop table if exists changelogs cascade</rollback>
+    </changeSet>
+    <changeSet id="2" author="lostway">
         <comment>Создание таблицы notifications</comment>
         <sql>
             create table notifications
@@ -13,8 +30,8 @@
                 id         bigserial primary key,
                 user_id    bigint,
                 event_id   bigint    not null,
-                message    text      not null,
                 is_read    boolean   not null,
+                changelog  bigint references changelogs (id),
                 created_at timestamp not null
             );
         </sql>

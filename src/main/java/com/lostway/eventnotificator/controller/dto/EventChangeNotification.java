@@ -10,7 +10,7 @@ public record EventChangeNotification(
         @NotNull FieldChange<String> name,
         @NotNull FieldChange<Integer> maxPlaces,
         @NotNull FieldChange<LocalDateTime> date,
-        @NotNull FieldChange<Long> cost,
+        @NotNull FieldChange<Double> cost,
         @NotNull FieldChange<Integer> duration,
         @NotNull FieldChange<Long> locationId
 ) {

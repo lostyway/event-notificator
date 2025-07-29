@@ -26,12 +26,13 @@ public class NotificationEntity {
     @Column(name = "event_id", nullable = false)
     private Long eventId;
 
-    @Column(name = "message", nullable = false)
-    private String message;
-
     @Column(name = "is_read", nullable = false)
     private boolean isRead;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "changelog", nullable = false)
+    private ChangeLogEntity changelog;
 }
