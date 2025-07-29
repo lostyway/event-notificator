@@ -30,7 +30,6 @@ spring:
         order_inserts: true
         order_updates: true
 
-
 logging:
   level:
     root: info
@@ -43,4 +42,9 @@ secret.key: verylongsecretkeyforpetprojecteventmanagerlostway2025
 
 #In second
 expiration.time: 3600
+
+scheduler:
+  enabled: true
+  cron: 0 */10 * * * *
+  days-to-delete: 7
 

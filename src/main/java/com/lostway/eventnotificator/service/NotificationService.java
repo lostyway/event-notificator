@@ -78,7 +78,23 @@ public class NotificationService {
         return changeLogMapper.toEventChangeNotifications(changelogs);
     }
 
+    /**
+     * Пометить выбранные нотификации пользователя как прочитанные
+     *
+     * @param notificationEventIds выбранные нотификации
+     * @param userId               ID пользователя
+     */
+
     public void markNotificationsAsRead(List<Long> notificationEventIds, Long userId) {
         notificationRepository.markIsReadByEventIdAndUserId(notificationEventIds, userId);
+    }
+
+    /**
+     * Удаление старых и прочитанных нотификаций
+     *
+     * @return количество удаленных нотификаций
+     */
+    public int deleteReadedAndOldNotifications(int daysToDelete) {
+        return notificationRepository.deleteByIsReadIsTrueOrCreatedAtBefore(ClockUtil.getMoscowTimeNow().minusDays(daysToDelete));
     }
 }
