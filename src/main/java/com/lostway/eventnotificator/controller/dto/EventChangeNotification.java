@@ -1,6 +1,6 @@
 package com.lostway.eventnotificator.controller.dto;
 
-import com.lostway.eventnotificator.kafka.FieldChange;
+import com.lostway.eventdtos.FieldChange;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;

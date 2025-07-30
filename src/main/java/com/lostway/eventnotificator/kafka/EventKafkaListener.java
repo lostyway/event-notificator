@@ -1,5 +1,7 @@
 package com.lostway.eventnotificator.kafka;
 
+import com.lostway.eventdtos.EventChangeKafkaMessage;
+import com.lostway.eventdtos.EventStatusChangeKafkaMessage;
 import com.lostway.eventnotificator.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

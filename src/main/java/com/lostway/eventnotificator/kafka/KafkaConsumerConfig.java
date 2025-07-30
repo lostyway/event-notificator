@@ -1,5 +1,7 @@
 package com.lostway.eventnotificator.kafka;
 
+import com.lostway.eventdtos.EventChangeKafkaMessage;
+import com.lostway.eventdtos.EventStatusChangeKafkaMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

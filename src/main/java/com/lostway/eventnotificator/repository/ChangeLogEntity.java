@@ -1,6 +1,6 @@
 package com.lostway.eventnotificator.repository;
 
-import com.lostway.eventnotificator.kafka.FieldChange;
+import com.lostway.eventdtos.FieldChange;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

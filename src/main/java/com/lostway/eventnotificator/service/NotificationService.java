@@ -1,7 +1,7 @@
 package com.lostway.eventnotificator.service;
 
+import com.lostway.eventdtos.EventChangeKafkaMessage;
 import com.lostway.eventnotificator.controller.dto.EventChangeNotification;
-import com.lostway.eventnotificator.kafka.EventChangeKafkaMessage;
 import com.lostway.eventnotificator.mapper.ChangeLogMapper;
 import com.lostway.eventnotificator.repository.ChangeLogEntity;
 import com.lostway.eventnotificator.repository.ChangeLogRepository;
