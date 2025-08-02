@@ -1,5 +1,6 @@
-package com.lostway.eventnotificator.repository;
+package com.lostway.eventnotificator.repository.entity;
 
+import com.lostway.eventnotificator.utility.ClockUtil;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,4 +39,16 @@ public class NotificationEntity {
 
     @Column(name = "user_to_notificate", nullable = false)
     private Long userToNotificate;
+
+    public static NotificationEntity getDefaultNotification(Long userId, Long eventId, ChangeLogEntity changelog) {
+        return NotificationEntity.builder()
+                .id(null)
+                .isRead(false)
+                .userId(userId)
+                .eventId(eventId)
+                .createdAt(ClockUtil.getMoscowTimeNow())
+                .changelog(changelog)
+                .userToNotificate(userId)
+                .build();
+    }
 }

@@ -1,11 +1,15 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="
-      http://www.liquibase.org/xml/ns/dbchangelog
-      https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd">
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="1" author="lostway">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="changelogs"/>
+            </not>
+        </preConditions>
         <comment>Создание таблицы changelogs</comment>
         <sql>
             create table changelogs
@@ -23,6 +27,11 @@
         <rollback>drop table if exists changelogs cascade</rollback>
     </changeSet>
     <changeSet id="2" author="lostway">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="notifications"/>
+            </not>
+        </preConditions>
         <comment>Создание таблицы notifications</comment>
         <sql>
             create table notifications
@@ -36,6 +45,23 @@
                 user_to_notificate bigint    not null
             );
         </sql>
-        <rollback>drop table if exists notifications cascade</rollback>
+    </changeSet>
+    <changeSet id="3" author="lostway">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="status_notifications"/>
+            </not>
+        </preConditions>
+        <comment>Создание таблицы status_notifications</comment>
+        <sql>
+            create table status_notifications
+            (
+                id          bigserial primary key,
+                message     text   not null,
+                event_id    bigint not null,
+                new_status  text   not null,
+                change_time timestamp
+            );
+        </sql>
     </changeSet>
 </databaseChangeLog>

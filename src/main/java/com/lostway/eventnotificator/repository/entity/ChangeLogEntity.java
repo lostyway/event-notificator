@@ -1,5 +1,6 @@
-package com.lostway.eventnotificator.repository;
+package com.lostway.eventnotificator.repository.entity;
 
+import com.lostway.eventdtos.EventChangeKafkaMessage;
 import com.lostway.eventdtos.FieldChange;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,4 +50,16 @@ public class ChangeLogEntity {
     @Column(name = "location_id", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private FieldChange<Long> locationId;
+
+    public static ChangeLogEntity getDefaultEntityFromMessage(EventChangeKafkaMessage message) {
+        return ChangeLogEntity.builder()
+                .eventId(message.getEventId())
+                .name(message.getName())
+                .maxPlaces(message.getMaxPlaces())
+                .date(message.getDate())
+                .cost(message.getCost())
+                .duration(message.getDuration())
+                .locationId(message.getLocationId())
+                .build();
+    }
 }

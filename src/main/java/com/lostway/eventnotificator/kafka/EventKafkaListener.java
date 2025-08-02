@@ -32,5 +32,6 @@ public class EventKafkaListener {
     )
     public void listen(EventStatusChangeKafkaMessage message) {
         log.info("Kafka прислал сообщение о смене статуса мероприятия: {}", message);
+        notificationService.addNotificationAboutChangeStatus(message);
     }
 }

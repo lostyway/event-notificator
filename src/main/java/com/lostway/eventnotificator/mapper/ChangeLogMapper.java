@@ -1,7 +1,7 @@
 package com.lostway.eventnotificator.mapper;
 
 import com.lostway.eventnotificator.controller.dto.EventChangeNotification;
-import com.lostway.eventnotificator.repository.ChangeLogEntity;
+import com.lostway.eventnotificator.repository.entity.ChangeLogEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;

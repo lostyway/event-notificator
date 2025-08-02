@@ -1,5 +1,6 @@
 package com.lostway.eventnotificator.repository;
 
+import com.lostway.eventnotificator.repository.entity.ChangeLogEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

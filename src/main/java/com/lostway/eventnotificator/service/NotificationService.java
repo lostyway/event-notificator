@@ -1,62 +1,59 @@
 package com.lostway.eventnotificator.service;
 
 import com.lostway.eventdtos.EventChangeKafkaMessage;
+import com.lostway.eventdtos.EventStatusChangeKafkaMessage;
 import com.lostway.eventnotificator.controller.dto.EventChangeNotification;
 import com.lostway.eventnotificator.mapper.ChangeLogMapper;
-import com.lostway.eventnotificator.repository.ChangeLogEntity;
+import com.lostway.eventnotificator.repository.EventChangeStatusRepository;
+import com.lostway.eventnotificator.repository.entity.ChangeLogEntity;
 import com.lostway.eventnotificator.repository.ChangeLogRepository;
-import com.lostway.eventnotificator.repository.NotificationEntity;
+import com.lostway.eventnotificator.repository.entity.EventChangeStatusEntity;
+import com.lostway.eventnotificator.repository.entity.NotificationEntity;
 import com.lostway.eventnotificator.repository.NotificationRepository;
 import com.lostway.eventnotificator.utility.ClockUtil;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Objects;
+
+import static com.lostway.eventnotificator.repository.entity.ChangeLogEntity.getDefaultEntityFromMessage;
+import static com.lostway.eventnotificator.repository.entity.NotificationEntity.getDefaultNotification;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+@Validated
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final ChangeLogRepository changeLogRepository;
     private final ChangeLogMapper changeLogMapper;
+    private final EventChangeStatusRepository eventChangeStatusRepository;
 
     /**
      * Добавление нотификации и ченджлога в БД.
      *
      * @param message сообщение, полученное от EventManager сервиса
      */
-    public void addNotification(EventChangeKafkaMessage message) {
-        ChangeLogEntity changeLogEntity = ChangeLogEntity.builder()
-                .eventId(message.getEventId())
-                .name(message.getName())
-                .maxPlaces(message.getMaxPlaces())
-                .date(message.getDate())
-                .cost(message.getCost())
-                .duration(message.getDuration())
-                .locationId(message.getLocationId())
-                .build();
+    public void addNotification(@NotNull EventChangeKafkaMessage message) {
+        ChangeLogEntity changelog = getDefaultEntityFromMessage(message);
 
-        changeLogRepository.save(changeLogEntity);
+        changeLogRepository.save(changelog);
         log.info("Создан changelog для изменения");
 
-        for (Long userId : message.getUsers()) {
-            NotificationEntity notification = NotificationEntity.builder()
-                    .id(null)
-                    .isRead(false)
-                    .userId(userId)
-                    .eventId(message.getEventId())
-                    .createdAt(ClockUtil.getMoscowTimeNow())
-                    .changelog(changeLogEntity)
-                    .userToNotificate(userId)
-                    .build();
-
-            notificationRepository.save(notification);
-            log.info("Создано уведомление для пользователя с ID: {}", userId);
-        }
+        message.getUsers().stream()
+                .filter(Objects::nonNull)
+                .forEach(userId -> {
+                    NotificationEntity notification = getDefaultNotification(userId, message.getEventId(), changelog);
+                    notificationRepository.save(notification);
+                    log.info("Создано уведомление для пользователя с ID: {}", userId);
+                });
     }
 
     /**
@@ -67,11 +64,21 @@ public class NotificationService {
      */
 
     @Transactional(readOnly = true)
-    public List<EventChangeNotification> findNotReadNotifications(Long userId) {
+    public List<EventChangeNotification> findNotReadNotifications(@NotNull Long userId) {
         List<NotificationEntity> notificationList = notificationRepository.findByUserIdAndIsReadIsFalse(userId);
 
-        List<ChangeLogEntity> changelogs = notificationList
-                .stream()
+        List<ChangeLogEntity> changelogs = notificationList.stream()
+                .map(NotificationEntity::getChangelog)
+                .toList();
+
+        return changeLogMapper.toEventChangeNotifications(changelogs);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventChangeNotification> findNotReadStatusNotifications(@NotNull Long userId) {
+        List<NotificationEntity> notificationList = notificationRepository.findByUserIdAndIsReadIsFalse(userId);
+
+        List<ChangeLogEntity> changelogs = notificationList.stream()
                 .map(NotificationEntity::getChangelog)
                 .toList();
 
@@ -85,7 +92,7 @@ public class NotificationService {
      * @param userId               ID пользователя
      */
 
-    public void markNotificationsAsRead(List<Long> notificationEventIds, Long userId) {
+    public void markNotificationsAsRead(@NotEmpty List<Long> notificationEventIds, @NotNull Long userId) {
         notificationRepository.markIsReadByEventIdAndUserId(notificationEventIds, userId);
     }
 
@@ -96,5 +103,17 @@ public class NotificationService {
      */
     public int deleteReadedAndOldNotifications(int daysToDelete) {
         return notificationRepository.deleteByIsReadIsTrueOrCreatedAtBefore(ClockUtil.getMoscowTimeNow().minusDays(daysToDelete));
+    }
+
+    /**
+     * Добавление нотификации о смене статуса мероприятия в БД.
+     *
+     * @param message сообщение, полученное от EventManager сервиса
+     */
+
+    public void addNotificationAboutChangeStatus(@NotNull EventStatusChangeKafkaMessage message) {
+        EventChangeStatusEntity eventChangeStatus = EventChangeStatusEntity.getDefaultMessage(message);
+        eventChangeStatusRepository.save(eventChangeStatus);
+        log.info("Уведомление о смене статуса сохранено в БД");
     }
 }

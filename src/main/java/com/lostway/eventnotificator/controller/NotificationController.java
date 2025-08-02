@@ -1,6 +1,7 @@
 package com.lostway.eventnotificator.controller;
 
 import com.lostway.eventnotificator.controller.dto.EventChangeNotification;
+import com.lostway.eventnotificator.controller.dto.EventStatusNotification;
 import com.lostway.eventnotificator.controller.dto.MarkReadRequest;
 import com.lostway.eventnotificator.security.CustomUserPrincipal;
 import com.lostway.eventnotificator.service.NotificationService;
@@ -28,7 +29,7 @@ public class NotificationController {
         return ResponseEntity.noContent().build();
     }
 
-    private static Long getCurrentUserId() {
+    private Long getCurrentUserId() {
         CustomUserPrincipal customUserPrincipal = (CustomUserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return customUserPrincipal.getId();
     }
